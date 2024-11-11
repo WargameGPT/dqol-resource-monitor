@@ -5,10 +5,29 @@ local Naming = {}
 ---@return string
 function Naming.getSiteName(pos, type)
     if settings.global['dqol-resource-monitor-site-name-generator'].value == 'Numeric' then
-        return Naming.getNumericName(type)
+        return Naming.getNumericName(pos,type)
     else
         return Naming.getRandomName(pos)
     end
+end
+
+-- 
+function get_octant_name(vector)
+    
+    local octant_names = {
+        [0] = "E",
+        [1] = "SE",
+        [2] = "S",
+        [3] = "SW",
+        [4] = "W",
+        [5] = "NW",
+        [6] = "N",
+        [7] = "NE",
+    }
+    local radians = math.atan2(vector.y, vector.x)
+    local octant = math.floor(8 * radians / (2 * math.pi) + 8.5) % 8
+
+    return octant_names[octant]
 end
 
 ---@param pos IntPosition?
@@ -34,13 +53,13 @@ end
 
 ---@param type string
 ---@return string
-function Naming.getNumericName(type)
+function Naming.getNumericName(pos, type)
     local count = 1
     for _, surface in pairs(Sites.storage.getSurfaceList()) do
         count = count + #(surface[type] or {})
     end
 
-    return Resources.types[type].translated_name .. ' ' .. count
+    return Resources.types[type].translated_name .. ' ' .. string.format("%s-%d", get_octant_name(pos), math.floor(math.sqrt(pos.x * pos.x + pos.y * pos.y)))
 end
 
 ---@param pos IntPosition
