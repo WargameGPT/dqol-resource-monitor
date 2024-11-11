@@ -59,7 +59,7 @@ function Naming.getNumericName(pos, type)
         count = count + #(surface[type] or {})
     end
 
-    return Resources.types[type].translated_name .. ' ' .. string.format("%s-%d", get_octant_name(pos), math.floor(math.sqrt(pos.x * pos.x + pos.y * pos.y)))
+    return string.format("%s-%d %s %d", get_octant_name(pos), math.floor(math.sqrt(pos.x * pos.x + pos.y * pos.y)),Resources.types[type].translated_name, count )
 end
 
 ---@param pos IntPosition
